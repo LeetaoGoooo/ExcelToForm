@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log4php:configuration xmlns:log4php="http://logging.apache.org/log4php/" threshold="all">
+    <appender name="default" class="LoggerAppenderDailyFile">
+        <layout class="LoggerLayoutPattern" >
+            <param name="conversionPattern" value="%date{Y-m-d H:i:s} %logger %msg%n" />
+        </layout>
+        <param name="file" value="/var/www/html/ExcelToForm/log/data.%s.txt" />
+    </appender>
+    <root>
+        <level value="DEBUG" />
+        <appender_ref ref="default" />
+    </root>
+</log4php:configuration>
