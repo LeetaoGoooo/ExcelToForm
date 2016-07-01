@@ -7,7 +7,8 @@ class ExcelToFormController{
   }
 
   public function parseFormAction(){
-    $this->__excelForm->parseForm();
+    $results = $this->__excelForm->parseForm();
+    return $results;
   }
 }
 ?>

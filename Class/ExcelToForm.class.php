@@ -10,13 +10,17 @@
  *            header(optional)
  *   lablename [fieldname]  lablename [fieldname]
  *   ...
+ *     btn1         btn2
  *************************************************
  * 生成Form表单保持原有格式，将[fieldname]替换输入框
  * 所有单元格的字体样式保持不变
  * 解析xls完成返回JSON格式数据如下:
  * [  "header":{"value":"xxx","style":{"font-size":"xxx",...}},
  *    "cols0":[{"value":"xxx","field":"xxxx","style":{"font-size":"xxx",...}},{...},...],
- *    "cols1":[{},{}]]
+ *    "cols1":["type":'button',{},{}]]
+ *  如果存在button，则存在字段type为button
+ *  @author leetao
+ *  @version 1.0.0 2016/7/1
  */
 
 
@@ -42,7 +46,9 @@ class ExcelToForm
 
 
     /**
-    * 解析xls表格
+    * 解析xls表格,根据读取的Excel表单解析生成前台约定的JSON数据
+    *
+    * @return   string    JSON格式的parseFormData
     */
     public function parseForm()
     {
@@ -59,19 +65,27 @@ class ExcelToForm
           $headerFlag = true;
         }
 
-        $rowStart = $headerFlag ? 1 : 0;
-        for ($row = $rowStart; $row < $rowNum; $row++) {
-            if (count($colTemp) > 0 ) {
-              $results[]
-            }
+        $rowStart = $headerFlag ? 2 : 1;
+        $index = 0;
+        for ($row = $rowStart; $row <= $rowNum; $row++) {
+            $colTemp = array();
           for ($col = 0; $col < $colNum ; $col++) {
+              $this->_loggerMsg(__FUNCTION__ ." ".__LINE__ ." row:".$row." col".$col);
               $cellObj = $this->_excelSheet->getCellByColumnAndRow($col,$row);
               if (!is_null($cellObj->getValue())) {
                   $cellNearObj = $this->_excelSheet->getCellByColumnAndRow($col+1,$row);
                   array_push($colTemp,$this->_getCellProperty($cellObj,$cellNearObj));
+
+                  if (is_null($cellNearObj->getValue())) {
+                    $col -= 1;
+                  }
+                  $col += 2;
               }
           }
+          $results[$index++] = $colTemp;
         }
+        $this->_loggerMsg(__FUNCTION__ ." ".__LINE__ ." parseForm results:".json_encode($results));
+        return json_encode($results);
     }
 
       /**
@@ -113,12 +127,12 @@ class ExcelToForm
 
           $res['value'] = $cellObj->getValue();
 
-          $style['font-size'] = $cellObj->getStyle()->getFont()->getSize();
-          $style['font-color'] = $cellObj->getStyle()->getFont()->getARGB();
+          $style['fontsize'] = $cellObj->getStyle()->getFont()->getSize();
+          $style['fontcolor'] = $cellObj->getStyle()->getFont()->getColor()->getARGB();
           $style['bold'] = $cellObj->getStyle()->getFont()->getBold();
           $res['style'] = $style;
 
-          if (!is_null($cellNearObj)) {
+          if (!is_null($cellNearObj->getValue())) {
             $res['field'] = $cellNearObj->getValue();
           }
 

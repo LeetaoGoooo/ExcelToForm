@@ -35,10 +35,11 @@
      }
      if($res)
      {
-         return $res;
+        //  $logger->debug(__FUNCTION__ ." ".__LINE__ ." results:".$res);
+         echo $res;
      }else{
          $logger->debug(__FUNCTION__ ." ".__LINE__ ." get no results");
-         return false;
+         echo false;
      }
  }else{
   $logger->debug(__FUNCTION__ ." ".__LINE__ ." lack params");
