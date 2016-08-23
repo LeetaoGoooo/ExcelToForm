@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<kml xmlns="http://earth.google.com/kml/2.0">
+<Document>
+<name>Mapinfo Import</name>
+  <Style id="polystyle">
+    <LineStyle>
+      <color>ff7faaff</color>
+    </LineStyle>
+    <PolyStyle>
+      <fill>0</fill>
+    </PolyStyle>
+  </Style>
+  <Style id="textstyle">
+      <IconStyle>
+        <Icon></Icon>
+      </IconStyle>
+      <LabelStyle>
+        <color>ff0000ff</color>
+      </LabelStyle>
+    </Style>
+<Folder>
+<name>Layer 三环内_郑东新区微网格_临时用_</name>
+<Placemark>
+  <name>
+    <![CDATA[Region 1]]>
+  </name>
+  <LookAt>
+    <longitude>113.657001</longitude>
+    <latitude>34.803382</latitude>
+    <range>786</range>
+    <tilt>0</tilt>
+    <heading>0</heading>
+  </LookAt>
+  <styleUrl>#polystyle</styleUrl>
+<Polygon>
+  <outerBoundaryIs>
+    <LinearRing>
+      <coordinates>
+      113.5019300245505,34.62296810165354,0
+      113.4972714029445,34.63319636420183,0
+      113.4982461186882,34.63636760323906,0
+      113.5166768804244,34.64081439019763,0
+      113.5231708859694,34.63116303501789,0
+	  113.5103927579237,34.62042168912716,0
+	  113.5019300245505,34.62296810165354,0
+      </coordinates>
+    </LinearRing>
+  </outerBoundaryIs>
+</Polygon>
+</Placemark>
+<Placemark>
+</Folder>
+</Document>
+</kml>
