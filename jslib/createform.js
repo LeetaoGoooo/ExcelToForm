@@ -5,10 +5,7 @@
  * @author leetao
  * @version 1.0.0 2016/7/1
  */
-
-
 var createForm = function () {
-    'use strict';
     var ajaxUrl = './action.php?c=ExcelToForm&a=parseFormAction';
 
     /**
@@ -44,16 +41,16 @@ var createForm = function () {
      */
     generateFormRemain = function (headerFlag, remainObj) {
         var len = headerFlag ? remainObj.length - 1 : remainObj.length;
-        var remainHTML = "";
+        var remainHTML = "<div class='container'><form>";
 
         for (var i = 0; i < len; i++) {
             if (!(typeof remainObj[i][0].field == 'undefined')) {
-                remainHTML += generateFormInAndLab(remainObj[i]) + "</br>";
+                remainHTML = remainHTML + generateFormInAndLab(remainObj[i]);
             } else {
-                remainHTML += generateFormButton(remainObj[i]);
+                remainHTML =  remainHTML + generateFormButton(remainObj[i]);
             }
         }
-        return remainHTML;
+        return (remainHTML+"</form></div>");
     };
 
     /**
@@ -67,11 +64,12 @@ var createForm = function () {
         var len = inDataObj.length;
         var InAndLabHTML = "";
         for (var i = 0; i < len; i++) {
-            var inputHTML = "<input id='" + inDataObj[i].field + "' ></input>";
+            var inputHTML = "<input id='" + inDataObj[i].field + "' type='text' class='form-control'></input>";
             var style = "style='font-size:" + inDataObj[i].style.fontsize + ";color:" + inDataObj[i].style.fontcolor.substring(0, inDataObj[i].style.fontcolor.length - 3) + "'";
-            var labelHTML = inDataObj[i].style.bold ? "<label " + style + "><b>" + inDataObj[i].value + "</b></label>" : "<label " + style + ">" + inDataObj[i].value + "</label>";
-            InAndLabHTML += labelHTML + inputHTML;
+            var labelHTML = inDataObj[i].style.bold ? "<div class='form-group'><label " + style + " for="+inDataObj[i].field+"><b>" + inDataObj[i].value + "</b></label>" : "<div class='form-group'><label " + style + " for="+inDataObj[i].field+">" + inDataObj[i].value + "</label>";
+            InAndLabHTML = InAndLabHTML + labelHTML + inputHTML;
         }
+        InAndLabHTML = InAndLabHTML+ '</div>';
         return InAndLabHTML;
     };
 
@@ -87,7 +85,7 @@ var createForm = function () {
         var btnsHTML = "";
         for (var i = 0; i < btnDataObj.length; i++) {
             var style = "style='font-size:" + btnDataObj[i].style.fontsize + ";color:" + btnDataObj[i].style.fontcolor.substring(0, btnDataObj[i].style.fontcolor.length - 3) + "'";
-            var btnHTML = btnDataObj[i].style.bold ? "<button " + style + "><b>" + btnDataObj[i].value + "</b></button>" : "<button " + style + ">" + btnDataObj[i].value + "</button>";
+            var btnHTML = btnDataObj[i].style.bold ? "<button " + style + " class='btn btn-default'><b>" + btnDataObj[i].value + "</b></button>" : "<button " + style + " class='btn btn-default'>" + btnDataObj[i].value + "</button>";
             btnsHTML += btnHTML;
         }
         return btnsHTML;
@@ -112,7 +110,6 @@ var createForm = function () {
          * @return  DOM节点   自动将表单添加到节点
          */
         generateFormByAjax: function(formId) {
-
             $.post(ajaxUrl, {},
                 function(data) {
                     var jsonObj = JSON.parse(data);

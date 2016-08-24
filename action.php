@@ -2,7 +2,7 @@
 /**
  * Doc:all applications' entrance
  */
- define('APPLICATION_PATH','/var/www/html/ExcelToForm');
+ define('APPLICATION_PATH','D:/wamp/www/ExcelToForm');
  define('LOG4PHP_DIR',APPLICATION_PATH.'/lib/log4php');
  define('LOG_CONF',APPLICATION_PATH.'/log_conf.xml');
  //set the timezone

@@ -52,6 +52,8 @@ class ExcelToForm
     */
     public function parseForm()
     {
+        $headerFlag = false;
+        
         $results = array();
         $colTemp = array();
 
