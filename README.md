@@ -14,7 +14,7 @@
  7.  按钮: B:按钮名称
 
 ### 工具
-开发语言: PHP <p>
+开发语言: PHP(后续使用Java) <p> 
 使用的库: 
  1. 关于Excel处理的使用**PHPExcel**
  2. 关于日志的使用**Log4php**,[Log4php的配置](http://www.cnblogs.com/leetao94/p/4692787.html)
