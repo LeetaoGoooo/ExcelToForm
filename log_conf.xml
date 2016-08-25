@@ -4,7 +4,7 @@
         <layout class="LoggerLayoutPattern" >
             <param name="conversionPattern" value="%date{Y-m-d H:i:s} %logger %msg%n" />
         </layout>
-        <param name="file" value="/var/www/html/ExcelToForm/log/data.%s.txt" />
+        <param name="file" value="D:/wamp/www/ExcelToForm/log/data.%s.txt" />
     </appender>
     <root>
         <level value="DEBUG" />

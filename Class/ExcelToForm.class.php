@@ -5,26 +5,11 @@
  *
  * 通过对Excel的配置，
  * 实现Web端的表单自动生成
- * xls格式如下:
- * ***********************************************
- *            header(optional)
- *   lablename [fieldname]  lablename [fieldname]
- *   ...
- *     btn1         btn2
- *************************************************
- * 生成Form表单保持原有格式，将[fieldname]替换输入框
- * 所有单元格的字体样式保持不变
- * 解析xls完成返回JSON格式数据如下:
- * [  "header":{"value":"xxx","style":{"font-size":"xxx",...}},
- *    "cols0":[{"value":"xxx","field":"xxxx","style":{"font-size":"xxx",...}},{...},...],
- *    "cols1":["type":'button',{},{}]]
+ *
  *  如果存在button，则存在字段type为button
  *  @author leetao
  *  @version 1.0.0 2016/7/1
  */
-
-
-
 
 
 class ExcelToForm
@@ -36,6 +21,7 @@ class ExcelToForm
     private $_excelSheet;
     //css样式设置
     private $_configCss;
+    private $_configCssKeys;
 
     public function __construct($path = null)
     {
@@ -49,10 +35,11 @@ class ExcelToForm
                                     "button" => '.btn',
                                     "input" => '.form-control',
                                     "radio" => '.radio-inline',
-                                    "checkbox" => '.checkbox',
+                                    "checkbox" => '.checkbox-inline',
                                     "label" => '.label',
                                     "select" => '.select'
                                   );
+        $this->_configCssKeys = array("header","button","input","radio","checkbox","label","select");
     }
 
 
@@ -63,96 +50,49 @@ class ExcelToForm
     */
     public function parseForm()
     {
-        $headerFlag = false;
         
-        $results = array();
-        $colTemp = array();
-
+        $resultHTML = '';
         //获取excel的行数和列数
         $rowNum = $this->_excelSheet->getHighestRow();
         $colAlph = $this->_excelSheet->getHighestColumn();
         $colNum = PHPExcel_Cell::columnIndexFromString($colAlph);
 
-        if ($this->_getHeader($colNum)) {
-          $results['header'] = $this->_getHeader($colNum);
-          $headerFlag = true;
-        }
-
-        $rowStart = $headerFlag ? 2 : 1;
-        $index = 0;
-        for ($row = $rowStart; $row <= $rowNum; $row++) {
-            $colTemp = array();
+        for ($row = 0; $row <= $rowNum; $row++) {
           for ($col = 0; $col < $colNum ; $col++) {
               $this->_loggerMsg(__FUNCTION__ ." ".__LINE__ ." row:".$row." col".$col);
               $cellObj = $this->_excelSheet->getCellByColumnAndRow($col,$row);
               if (!is_null($cellObj->getValue())) {
-                  $cellNearObj = $this->_excelSheet->getCellByColumnAndRow($col+1,$row);
-                  array_push($colTemp,$this->_getCellProperty($cellObj,$cellNearObj));
-
-                  if (is_null($cellNearObj->getValue())) {
-                    $col -= 1;
-                  }
-                  $col += 2;
+                  $resultHTML = $resultHTML.$this->_genarateFormComponent($cellObj->getValue());
               }
           }
-          $results[$index++] = $colTemp;
         }
-        $this->_loggerMsg(__FUNCTION__ ." ".__LINE__ ." parseForm results:".json_encode($results));
-        return json_encode($results);
+        $this->_loggerMsg(__FUNCTION__ ." ".__LINE__ ." parseForm results:".$resultHTML);
+        return $resultHTML;
     }
 
-      /**
-       * 判断form表单是否存在表头,表头只可能存在excel的第一行
-       * 检测是否存在单元格内容为 H:标题名
-       *
-       * @param   $colNum   列数
-       *
-       * @return boolean or object    false or headerObj {"value":xxx,style:{...}}
-       */
-      private function _getHeader($colNum)
-      {
-          for ($col = 0; $col < $colNum; $col++) {
-              $cellObj = $this->_excelSheet->getCellByColumnAndRow($col,1);
 
-              if (!is_null($cellObj->getValue())) {
-                  $cellNearObj = $this->_excelSheet->getCellByColumnAndRow($col+1,1);
-
-                  if (is_null($cellNearObj->getValue())) {
-                    return $this->_getCellProperty($cellObj);
-                  }
-                  return false;
-              }
-          }
-      }
-
-      /**
-      * 获取单元格的属性,包括单元格值，字体大小，字体颜色，是否加粗
-      *
-      * @param   $cellObj   单元格对象
-      * @param   $cellNearObj   该单元格右侧相邻的单元格对象
-      *
-      * @return  array   {"value":{},style:{"font-size":xxx,["field":xxx](可选),font-color":yyy,"bold":zzz}}
-      *
-      */
-      private function _getCellProperty($cellObj,$cellNearObj = null)
-      {
-          $res = array();
-          $style = array();
-          $field = array();
-
-          $res['value'] = $cellObj->getValue();
-
-          $style['fontsize'] = $cellObj->getStyle()->getFont()->getSize();
-          $style['fontcolor'] = $cellObj->getStyle()->getFont()->getColor()->getARGB();
-          $style['bold'] = $cellObj->getStyle()->getFont()->getBold();
-          $res['style'] = $style;
-
-          if (!is_null($cellNearObj->getValue())) {
-            $res['field'] = $cellNearObj->getValue();
-          }
-
-          return $res;
-      }
+    /**
+     * 修改Css的配置文件
+     * 检测是否所有key都包含,
+     * 不包含的,则使用缺省样式
+     *
+     * @param   array  $config
+     *
+     * @return  bool|string    设置成功返回true,否则返回错误信息
+     */
+    private function _setConfigCss($config) {
+        if(!is_array($config)){
+            $this->_logger->debug(__FUNCTION__ ." ".__LINE__ ." 类型错误!");
+            return json_encode(array('msg'=>'css配置参数类型错误!'));
+        }
+        foreach ($this->_configCssKeys as $value){
+            if(!array_key_exists($value,$config)){
+                $config[$value] = $this->_configCss[$value];
+            }
+        }
+        $this->_configCss = $config;
+        return true;
+    }
 
     /**
      * 生成相应的form表头
@@ -276,13 +216,17 @@ class ExcelToForm
               case 'C:':
                   return $this->_genarateFormCheckBox($remainStr);
                   break;
-              case 'S:':
+              case 'R:':
                   return $this->_genarateFormRadio($remainStr);
                   break;
               case 'B:':
                   return $this->_genarateFormButton($remainStr);
                   break;
+              case 'S:':
+                  return $this->_genarateFormSelect($remainStr);
+                  break;
               default:
+                  $this->_loggerMsg(__FUNCTION__ ." ".__LINE__ ." Unknown Label: ".$startWithStr);
                   return false;
           }
       }
@@ -290,9 +234,9 @@ class ExcelToForm
       /**
       * 检测excel文件是否正确
       *
-      * @param:   $path   excel文件路径
+      * @params   $path   excel文件路径
       *
-      * @return:  如果文件存在则返回true，否则返回false
+      * @return  boolean   如果文件存在则返回true，否则返回false
       */
       private function _checkExcelFile($path)
       {

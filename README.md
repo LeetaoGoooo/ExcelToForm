@@ -23,7 +23,9 @@
 第一版Excel配置:<p>
 ![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f75tsje7csj20b901idfx.jpg)<p>
 第一版效果图:
-![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f75tt735zuj20wx07i0t0.jpg)
+![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f75tt735zuj20wx07i0t0.jpg)<p>
+移除createform.js,将html由后端直接生成，然后在前台实现预览
+
 
 ### 关于表单样式
 默认css样式<p>
