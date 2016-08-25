@@ -31,7 +31,7 @@
 按钮 .btn <p>
 输入框 .form-control <p>
 单选框 .radio-inline <p>
-多选框 .checkbox-inline
-标签 .label
-下拉列表框 .select
+多选框 .checkbox-inline <p>
+标签 .label <p>
+下拉列表框 .select <p>
 
