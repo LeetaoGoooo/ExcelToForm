@@ -8,9 +8,9 @@
  1.  标题: H:标题名
  2.  标签: L:标签名
  3.  输入框: I:输入框名称
- 4.  单选框: S:选项1|选项2|选项3
- 5.  复选框: DS:选项1|选项2|选项3
- 6.  下拉列表框: D:选项1|选项2|选项3
+ 4.  单选框: R:选项1|选项2|选项3
+ 5.  复选框: C:选项1|选项2|选项3
+ 6.  下拉列表框: S:选项1|选项2|选项3
  7.  按钮: B:按钮名称
 
 ### 工具
@@ -24,3 +24,14 @@
 ![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f75tsje7csj20b901idfx.jpg)<p>
 第一版效果图:
 ![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f75tt735zuj20wx07i0t0.jpg)
+
+### 关于表单样式
+默认css样式<p>
+表头 .page-header <p>
+按钮 .btn <p>
+输入框 .form-control <p>
+单选框 .radio-inline <p>
+多选框 .checkbox-inline
+标签 .label
+下拉列表框 .select
+
