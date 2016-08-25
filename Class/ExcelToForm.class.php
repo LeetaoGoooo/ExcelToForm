@@ -120,6 +120,7 @@ class ExcelToForm
       * @param   $cellNearObj   该单元格右侧相邻的单元格对象
       *
       * @return  array   {"value":{},style:{"font-size":xxx,["field":xxx](可选),font-color":yyy,"bold":zzz}}
+      *
       */
       private function _getCellProperty($cellObj,$cellNearObj = null)
       {
