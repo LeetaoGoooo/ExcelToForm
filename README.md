@@ -27,7 +27,7 @@
 移除createform.js,将html由后端直接生成，然后在前台实现预览
 
 第二版Excel配置<p>
-![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f76x02ndloj20bb02l3yu.jpg)
+![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f76x02ndloj20bb02l3yu.jpg)<p>
 第二版效果图:
 ![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f76wz2p0yej20wf096dga.jpg)
 
