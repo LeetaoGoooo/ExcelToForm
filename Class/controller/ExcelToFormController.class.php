@@ -1,4 +1,4 @@
-<?php
+genarateFormTemplates<?php
 require_once("./Class/ExcelToForm.class.php");
 class ExcelToFormController{
   private $__excelForm;
@@ -7,7 +7,7 @@ class ExcelToFormController{
   }
 
   public function parseFormAction(){
-    $results = $this->__excelForm->parseForm();
+    $results = $this->__excelForm->genarateFormTemplates();
     return $results;
   }
 }

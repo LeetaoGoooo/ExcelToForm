@@ -17,41 +17,94 @@ class ExcelToForm
 
     private $_logger;
     private $_loggerflag = true;
+    private $_execlPath;
     private $_objPHPExcel;
     private $_excelSheet;
+
     //css样式设置
     private $_configCss;
     private $_configCssKeys;
+
+    //模板的头,身,尾以及引用资源
+    private $_tempheader;
+    private $_tempbody;
+    private $_tempfooter;
+    private $_tempsourece;
 
     public function __construct($path = null)
     {
         $this->_logger = \Logger::getLogger(__CLASS__);
         if ($this->_checkExcelFile($path)) {
-          $this->_objPHPExcel = \PHPExcel_IOFactory::load($path);
-          $this->_excelSheet = $this->_objPHPExcel->getSheet(0);
+          $this->_execlPath = $path;
         }
         $this->_configCss = array(
-                                    "header" => '.page-header',
-                                    "button" => '.btn',
-                                    "input" => '.form-control',
-                                    "radio" => '.radio-inline',
-                                    "checkbox" => '.checkbox-inline',
-                                    "label" => '.label',
-                                    "select" => '.select'
+                                    "header" => 'page-header',
+                                    "button" => 'btn',
+                                    "input" => 'form-control',
+                                    "radio" => 'radio-inline',
+                                    "checkbox" => 'checkbox-inline',
+                                    "label" => 'label',
+                                    "select" => 'select'
                                   );
         $this->_configCssKeys = array("header","button","input","radio","checkbox","label","select");
+        $this->_tempheader =<<<Header
+            <!DOCTYPE html>
+            <html>
+                <title>表单定制</title>
+            <head>
+Header;
+        $this->_tempbody =<<<Body
+            </head>
+            <body>
+            <div class="container">
+              <form>
+Body;
+        $this->_tempfooter =<<<Footer
+            </form>
+            </div>
+            </body>
+            </html>
+Footer;
+        $this->_tempsourece =<<<Source
+            <link rel='stylesheet' href='./default-style.css'>
+Source;
+
     }
 
+    /**
+     * 根据excel文件路径生成相应的表单模板
+     *
+     * @param null $path,excel文件路径
+     *
+     * @return  string|bool  错误则返回错误信息或者返回false,成功返回true
+     */
+    public  function  genarateFormTemplates($path=null) {
+        if(is_null($path)) {
+            $this->_logger->debug(__FUNCTION__ ." ".__LINE__ ." excel文件路径传入为空,调用默认路径");
+            if(is_null($this->_execlPath)){
+                $this->_logger->debug(__FUNCTION__ ." ".__LINE__ ." 默认路径为空!");
+                return json_encode(array("msg"=>"设置Excel路径"));
+            }else{
+                return $this->_parseForm();
+            }
+        }else{
+            $this->_execlPath = $path;
+            return $this->_parseForm();
+        }
+    }
 
     /**
     * 解析xls表格,根据读取的Excel表单解析生成前台约定的JSON数据
     *
     * @return   string    JSON格式的parseFormData
     */
-    public function parseForm()
+    private function _parseForm()
     {
-        
         $resultHTML = '';
+
+        $this->_objPHPExcel = \PHPExcel_IOFactory::load($this->_execlPath);
+        $this->_excelSheet = $this->_objPHPExcel->getSheet(0);
+
         //获取excel的行数和列数
         $rowNum = $this->_excelSheet->getHighestRow();
         $colAlph = $this->_excelSheet->getHighestColumn();
@@ -59,17 +112,31 @@ class ExcelToForm
 
         for ($row = 0; $row <= $rowNum; $row++) {
           for ($col = 0; $col < $colNum ; $col++) {
-              $this->_loggerMsg(__FUNCTION__ ." ".__LINE__ ." row:".$row." col".$col);
               $cellObj = $this->_excelSheet->getCellByColumnAndRow($col,$row);
               if (!is_null($cellObj->getValue())) {
                   $resultHTML = $resultHTML.$this->_genarateFormComponent($cellObj->getValue());
               }
           }
         }
-        $this->_loggerMsg(__FUNCTION__ ." ".__LINE__ ." parseForm results:".$resultHTML);
-        return $resultHTML;
+        $tempHTML = $this->_tempheader.$this->_tempsourece.$this->_tempbody.$resultHTML.$this->_tempfooter;
+        return $this->_writeTemplate($tempHTML);
     }
 
+
+    /**
+     * 将生成的html写入到相应位置
+     *
+     * @param   $html   生成的html代码
+     *
+     * @return  bool    成功返回true,失败返回false
+     */
+    private function _writeTemplate($html) {
+        $tempHTMLName = './formTemplates/template.html';
+        if(file_put_contents($tempHTMLName,$html)){
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 修改Css的配置文件
@@ -95,6 +162,18 @@ class ExcelToForm
     }
 
     /**
+     * 设置css的引用
+     *
+     * @param   $csspath    css的引用路径
+     *
+     * @return  bool|string  失败返回false,成功返回写入的字节数
+     */
+    public function setCssSouce($csspath) {
+        $file = file_get_contents($csspath);
+        return file_put_contents('./formTemplates/default-style.css',$file);
+    }
+
+    /**
      * 生成相应的form表头
      *
      * @param string $header,表头文字
@@ -114,7 +193,7 @@ class ExcelToForm
      * @return  string  返回生成的按钮html
      */
       private function _genarateFormButton($button='Button') {
-          $buttonHTML = '<button class="'.$this->_configCss['button'].'">'.$button.'</button>';
+          $buttonHTML = '<div><button class="'.$this->_configCss['button'].'">'.$button.'</button></div>';
           return $buttonHTML;
       }
 
@@ -152,7 +231,7 @@ class ExcelToForm
           $RadioNameArr = explode("|",$radio);
           $RadioHTML = '';
           foreach($RadioNameArr as $radios) {
-              $RadioHTML = $RadioHTML.'<label class="'.$this->_configCss['radio'].'"><input type="radio" value="'.$radios.'">'.$radios.'</label>';
+              $RadioHTML = $RadioHTML.'<label class="'.$this->_configCss['radio'].'"><input type="radio" name="optionsRadios" value="'.$radios.'">'.$radios.'</label>';
           }
           return $RadioHTML;
       }
@@ -168,7 +247,7 @@ class ExcelToForm
           $CheckNameArr = explode("|",$checkbox);
           $CheckBoxHTML = '';
           foreach ($CheckNameArr as $checkboxs) {
-              $CheckBoxHTML = $CheckBoxHTML.'<lable class="'.$this->_configCss['checkbox'].'"><input type="checkbox" value="'.$checkboxs.'">'.$checkboxs.'</label>';
+              $CheckBoxHTML = $CheckBoxHTML.'<label class="'.$this->_configCss['checkbox'].'"><input type="checkbox" value="'.$checkboxs.'">'.$checkboxs.'</label>';
           }
           return $CheckBoxHTML;
       }
@@ -183,11 +262,11 @@ class ExcelToForm
      */
       private function _genarateFormSelect($select='Select') {
           $SelectArr = explode("|",$select);
-          $SelectHTML = '<select class="select">';
+          $SelectHTML = '<div><select class="select">';
           foreach($SelectArr as $selects) {
-              $SelectHTML = $SelectHTML.'<option value="'.$selects.'">'.$selects.'</select>';
+              $SelectHTML = $SelectHTML.'<option value="'.$selects.'">'.$selects.'</option>';
           }
-          $SelectHTML = $SelectHTML."</select>";
+          $SelectHTML = $SelectHTML."</select></div>";
           return $SelectHTML;
       }
 
@@ -227,14 +306,14 @@ class ExcelToForm
                   break;
               default:
                   $this->_loggerMsg(__FUNCTION__ ." ".__LINE__ ." Unknown Label: ".$startWithStr);
-                  return false;
+                  return  false;
           }
       }
 
       /**
       * 检测excel文件是否正确
       *
-      * @params   $path   excel文件路径
+      * @param   $path  excel文件路径
       *
       * @return  boolean   如果文件存在则返回true，否则返回false
       */
