@@ -2,7 +2,7 @@
 通过Excel配置从而动态生成Web的表单<p>预期普通用户可以通过Excel设计出好看的表单
 
 ### 格式定义
-2016.8.25 重新定义格式<p>
+*2016.8.25* 重新定义格式<p>
 正常的表格包括:标题、标签、输入框、单选框、复选框、下拉列表框、按钮。<p>
 在Excel为了区分，依次定义格式输入:
  1.  标题: H:标题名
@@ -12,6 +12,9 @@
  5.  复选框: C:选项1|选项2|选项3
  6.  下拉列表框: S:选项1|选项2|选项3
  7.  按钮: B:按钮名称
+
+*2016.8.29* 关于布局
+Excel每列在Web布局中所占宽度百分比: 100%/cols,为了正常保证布局美观,尽量使得col为100的约数
 
 ### 工具
 开发语言: PHP(后续使用Java) <p> 
@@ -29,8 +32,13 @@
 第二版Excel配置<p>
 ![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f76x02ndloj20bb02l3yu.jpg)<p>
 第二版效果图:
-![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f76wz2p0yej20wf096dga.jpg)
+![](http://ww2.sinaimg.cn/large/d9e82fa4jw1f76wz2p0yej20wf096dga.jpg)<p>
 
+第三版Excel配置<p>
+布局还原,form样式有待调整<p>
+![](http://ww1.sinaimg.cn/large/d9e82fa4jw1f7adgk7nsuj20dh02fdg7.jpg)
+第三版效果图<p>
+![](http://ww4.sinaimg.cn/large/d9e82fa4jw1f7adhv6c98j20wx09m3z1.jpg)
 
 ### 关于表单样式
 默认css样式<p>
@@ -45,7 +53,7 @@
 ### 功能
 - [x] 读取指定Excel生成模板
 - [x] 支持自定义模板样式
-- [ ] 还原Excel布局
+- [x] 还原Excel布局
 - [ ] 表格样式的缺省多样式设计
 
 ### 使用

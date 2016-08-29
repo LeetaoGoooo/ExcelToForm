@@ -57,7 +57,7 @@ Header;
             </head>
             <body>
             <div class="container">
-              <form>
+              <form class='form-inline'>
 Body;
         $this->_tempfooter =<<<Footer
             </form>
@@ -109,14 +109,21 @@ Source;
         $rowNum = $this->_excelSheet->getHighestRow();
         $colAlph = $this->_excelSheet->getHighestColumn();
         $colNum = PHPExcel_Cell::columnIndexFromString($colAlph);
-
-        for ($row = 0; $row <= $rowNum; $row++) {
+        $this->_loggerMsg(__FUNCTION__ ." ".__LINE__ ." row: ".$rowNum." col: ".$colNum);
+        //每列宽度百分比
+        $width = 100/$colNum;
+        for ($row = 1; $row <= $rowNum; $row++) {
+            $rowHTML = '';
           for ($col = 0; $col < $colNum ; $col++) {
               $cellObj = $this->_excelSheet->getCellByColumnAndRow($col,$row);
               if (!is_null($cellObj->getValue())) {
-                  $resultHTML = $resultHTML.$this->_genarateFormComponent($cellObj->getValue());
+//                  $resultHTML = $resultHTML.$this->_genarateFormComponent($cellObj->getValue());
+                    $rowHTML = $rowHTML.$this->_genarateFormComponent($cellObj->getValue());
+              }else{
+                  $rowHTML = $rowHTML."<span style='margin-left:".$width."%'></span>";
               }
           }
+                $resultHTML = $resultHTML.'<div>'.$rowHTML.'</div>';
         }
         $tempHTML = $this->_tempheader.$this->_tempsourece.$this->_tempbody.$resultHTML.$this->_tempfooter;
         return $this->_writeTemplate($tempHTML);
@@ -181,7 +188,8 @@ Source;
      * @return string   返回生成的表头html
      */
       private function _genarateFormHeader($header='Header') {
-          $headerHTML = '<div class="'.$this->_configCss['header'].'"><h2>'.$header.'</h2></div>';
+          //$headerHTML = '<h2 class="'.$this->_configCss['header'].'">'.$header.'</h2>';
+          $headerHTML = '<h2>'.$header.'</h2>';
           return $headerHTML;
       }
 
@@ -262,11 +270,11 @@ Source;
      */
       private function _genarateFormSelect($select='Select') {
           $SelectArr = explode("|",$select);
-          $SelectHTML = '<div><select class="select">';
+          $SelectHTML = '<select class="select">';
           foreach($SelectArr as $selects) {
               $SelectHTML = $SelectHTML.'<option value="'.$selects.'">'.$selects.'</option>';
           }
-          $SelectHTML = $SelectHTML."</select></div>";
+          $SelectHTML = $SelectHTML."</select>";
           return $SelectHTML;
       }
 
