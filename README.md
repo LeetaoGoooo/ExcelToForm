@@ -17,8 +17,8 @@
 Excel每列在Web布局中所占宽度百分比: 100%/cols,为了正常保证布局美观,尽量使得col为100的约数
 
 ### 工具
-开发语言: PHP(后续使用Java) <p> 
-使用的库: 
+开发语言: PHP(后续使用Java) <p>
+使用的库:
  1. 关于Excel处理的使用**PHPExcel**
  2. 关于日志的使用**Log4php**,[Log4php的配置](http://www.cnblogs.com/leetao94/p/4692787.html)
 
@@ -49,6 +49,8 @@ Excel每列在Web布局中所占宽度百分比: 100%/cols,为了正常保证布
 多选框 .checkbox-inline <p>
 标签 .label <p>
 下拉列表框 .select <p>
+
+### 关于Index.html
 
 ### 功能
 - [x] 读取指定Excel生成模板
