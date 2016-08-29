@@ -188,8 +188,8 @@ Source;
      * @return string   返回生成的表头html
      */
       private function _genarateFormHeader($header='Header') {
-          //$headerHTML = '<h2 class="'.$this->_configCss['header'].'">'.$header.'</h2>';
-          $headerHTML = '<h2>'.$header.'</h2>';
+          $headerHTML = '<h2 class="'.$this->_configCss['header'].'">'.$header.'</h2>';
+//          $headerHTML = '<h2>'.$header.'</h2>';
           return $headerHTML;
       }
 

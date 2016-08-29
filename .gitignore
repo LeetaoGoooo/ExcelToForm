@@ -4,3 +4,6 @@ lib/
 # log file     #
 ################
 log/
+# .idea file #
+##############
+.idea/
