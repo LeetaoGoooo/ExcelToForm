@@ -1,5 +1,6 @@
-genarateFormTemplates<?php
-require_once("./Class/ExcelToForm.class.php");
+<?php
+require_once("./Class/exceltoform/ExcelToForm.class.php");
+
 class ExcelToFormController{
   private $__excelForm;
   public function __construct(){

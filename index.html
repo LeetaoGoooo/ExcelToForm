@@ -6,7 +6,20 @@
     <link rel="stylesheet" href="./css/bootstrap-theme.css">
     <link rel="stylesheet" href="./css/nav.css">
     <script src="./jslib/jquery.min.js"></script>
+    <script src="./jslib/ajaxfileupload.js"></script>
     <script src="./jslib/bootstrap.min.js"></script>
+      <style>
+          a {
+              color: #337ab7;
+              text-decoration: none;
+          }
+          a {
+              background-color: transparent;
+          }
+          .default-css{
+              text-align: center;
+          }
+      </style>
   </head>
 <body>
   <div class="container">
@@ -21,20 +34,228 @@
       </nav>
     </div>
       <div class="row">
-        <div class="col-sm-3 col-md-3 sidebar" >
+        <div class="col-sm-3 col-md-3 sidebar" style="height: 100vh" >
           <ul class="nav nav-sidebar">
             <li class="active"><a href="#">菜单 <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">选择缺省样式</a></li>
-            <li><a href="#">上传Excel文件</a></li>
-            <li><a href="#">上传样式文件</a></li>
+            <li><a href="javascript:selectDefaultCssMenu()">选择缺省样式</a></li>
+            <li><a href="javascript:uploadExcelMenu()">上传Excel文件</a></li>
+            <li><a href="javascript:uploadCssMenu()">上传样式文件</a></li>
+              <li><a href="javascript:trantoFormMenu()">转换表格</a></li>
           </ul>
         </div>
-        <div class="col-sm-8 col-md-8">
+        <div class="col-sm-9 col-md-9">
           <!--缺省样式-->
+            <div class="default-css">
+                <div class="col-sm-6 col-md-4 col-lg-4">
+                    <div class="thumbnail">
+                        <a href="javascript:void(0)">
+                            <img  class="lazy" src="imgs/style1.png" width="300px" height="150">
+                        </a>
+                        <div class="caption">
+                            <h3>
+                                <a href="https://github.com/lt94/ExcelToForm/blob/master/css/form-style/default-style1.css" target="_blank">
+                                    表单定制样式一
+                                    <br>
+                                    <small>by @Leetao</small>
+                                </a>
+                            </h3>
+                            <p>缺省样式:so ugly</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
           <!--上传文件-->
+            <div class="uploadExcel">
+                <div class="jumbotron">
+                    <h3>上传Excel注意事项</h3>
+                    <p>
+                        上传的Excel文件将生成相应的Web表单,格式定义遵循如下规则 "( )表示可选":<br>
+                        <span class="label label-info">标题:</span> H:标题名<br>
+                        <span class="label label-info">标签:</span> L:标签名<br>
+                        <span class="label label-info">输入框:</span> I:(输入框名称)<br>
+                        <span class="label label-info">单选框:</span> R:选项1|选项2|选项3|...<br>
+                        <span class="label label-info">多选框:</span> C:选项1|选项2|选项3|...<br>
+                        <span class="label label-info">下拉列表框:</span> S:选项1|选项2|选项3...<br>
+                        <span class="label label-info">按钮:</span> B:按钮名称<br>
+                    </p>
+                    <p><input type="file" name="excel" id="excel"></p>
+                    <p><a class="btn btn-primary btn-md" href="javascript:uploadExcel()" role="button">上传</a></p>
+                </div>
+            </div>
           <!--上传css文件-->
+            <div class="uploadCss">
+                <div class="jumbotron">
+                    <h3>上传Css注意事项</h3>
+                    <p>
+                        上传的Css文件将作用于生成的表单样式,表单样式定义遵循如下规则:<br>
+                        <span class="label label-info">标题:</span>.page-header <br>
+                        <span class="label label-info">按钮:</span> .btn <br>
+                        <span class="label label-info">输入框:</span> .form-control <br>
+                        <span class="label label-info">单选框:</span> .radio-inline <br>
+                        <span class="label label-info">多选框:</span> .checkbox-inline <br>
+                        <span class="label label-info">标签:</span>.label <br>
+                        <span class="label label-info">下拉列表框:</span> .select <br>
+                        </br>
+                    </p>
+                    <p><input type="file" name="css" id="css"></p>
+                    <p><a class="btn btn-primary btn-md" href="javascript:uploadCss()" role="button">上传</a></p>
+                </div>
+            </div>
         </div>
+          <!--转换表格-->
+          <div class="trantoForm">
+            <div class="jumbotron">
+                <span class="label label-primary">上传css文件:</span>
+                <div class="progress" style="margin-top: 10px">
+                    <div id="cssprogress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;">
+                        0%
+                    </div>
+                </div>
+                <span class="label label-info">上传excel文件:</span>
+                <div class="progress" style="margin-top: 10px">
+                    <div id='excelprogress' class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 2%;">
+                        0%
+                    </div>
+                </div>
+                <span class="label label-success">转换表格:</span>
+                <div class="progress" style="margin-top: 10px">
+                    <div id='tranformprogess' class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 2%;">
+                        0%
+                    </div>
+                </div>
+                <a class="btn btn-primary btn-lg" href="trantoForm()" role="button">转换</a>
+            </div>
+          </div>
       </div>
   </div>
+<script>
+    var uploadFileUrl = 'action.php?a=saveFileAction&c=Uploadfile';
+    var uploadCssFlag = false;
+    var uploadExcelFlag = false;
+
+    $(document).ready(function(){
+        hiddenAllDiv();
+        selectDefaultCssMenu();
+    });
+
+    /**
+     * 隐藏所有div
+     */
+    var hiddenAllDiv = function() {
+        //隐藏缺省样式
+        $('.default-css')[0].style.display = 'none';
+        //隐藏上传Excel文件
+        $('.uploadExcel')[0].style.display = 'none';
+        //隐藏上传Css文件
+        $('.uploadCss')[0].style.display = 'none';
+        //转换表格
+        $('.trantoForm')[0].style.display = 'none';
+    };
+
+    /**
+     * 显示缺省样式列表
+     */
+    var selectDefaultCssMenu = function() {
+        hiddenAllDiv();
+        $('.default-css')[0].style.display = '';
+    };
+
+    /**
+     *  显示上传文件
+     */
+    var uploadExcelMenu = function() {
+        hiddenAllDiv();
+        $('.uploadExcel')[0].style.display = '';
+    };
+
+    /**
+     * 显示上传css文件
+     */
+    var uploadCssMenu = function() {
+        hiddenAllDiv();
+        $('.uploadCss')[0].style.display = '';
+    };
+
+
+    /**
+     * 显示转换表格
+     */
+    var trantoFormMenu = function() {
+        hiddenAllDiv();
+        $('.trantoForm')[0].style.display = '';
+        if(uploadCssFlag){
+            $('#cssprogress').css("width","100%").text("100%");
+        }
+        if(uploadExcelFlag){
+            $('#excelprogress').css("width","100%").text("100%")
+        }
+    };
+
+    /**
+     * 上传Excel文件
+     */
+    var uploadExcel = function() {
+        var obj = {};
+        obj['type'] = 'excel';
+        obj['id'] = getId();
+        var url = uploadFileUrl+"&objstr="+JSON.stringify(obj);
+        uploadFile(url,'excel');
+    };
+
+    /**
+     * 上传Css文件
+     */
+    var uploadCss = function() {
+        var obj = {};
+        obj['type'] = 'css';
+        obj['id'] = getId();
+        var url = uploadFileUrl+"&objstr="+JSON.stringify(obj);
+        uploadFile(url,'css');
+    };
+
+    /**
+     * 上传文件
+     */
+    var uploadFile = function(url,id) {
+        $.ajaxFileUpload
+        (
+                {
+                    url:url, //用于文件上传的服务器端请求地址
+                    secureuri: false, //是否需要安全协议，一般设置为false
+                    fileElementId: id, //文件上传域的ID
+                    dataType: 'json', //返回值类型 一般设置为json
+                    success: function (data)  //服务器成功响应处理函数
+                    {
+                        if (data == 1) {
+                            alert("上传成功");
+                            if(id == 'css'){
+                                uploadCssFlag = true;
+                            }
+                            if(id == 'excel'){
+                                uploadExcelFlag = true;
+                            }
+                        }else{
+                            alert("上传失败!请尝试重新上传");
+                        }
+                    }
+                }
+        )
+    };
+
+    /**
+     * 获取唯一id
+     */
+    var getId = function () {
+        return '1';
+    };
+
+    /**
+     * 表格转换
+     *
+     */
+    var trantoForm = function() {
+
+    };
+</script>
 </body>
 </html>
