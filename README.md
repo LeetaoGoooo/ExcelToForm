@@ -36,7 +36,7 @@ Excel每列在Web布局中所占宽度百分比: 100%/cols,为了正常保证布
 
 第三版Excel配置<p>
 布局还原,form样式有待调整<p>
-![](http://ww1.sinaimg.cn/large/d9e82fa4jw1f7adgk7nsuj20dh02fdg7.jpg)
+![](http://ww1.sinaimg.cn/large/d9e82fa4jw1f7adgk7nsuj20dh02fdg7.jpg)<p>
 第三版效果图<p>
 ![](http://ww4.sinaimg.cn/large/d9e82fa4jw1f7adhv6c98j20wx09m3z1.jpg)
 
