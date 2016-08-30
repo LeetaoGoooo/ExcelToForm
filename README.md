@@ -53,7 +53,7 @@ Excel每列在Web布局中所占宽度百分比: 100%/cols,为了正常保证布
 下拉列表框 .select <p>
 
 ### 关于Index.html
-
+[index](https://github.com/lt94/ExcelToForm/blob/master/INDEX.md)
 
 ### 功能
 - [x] 读取指定Excel生成模板
