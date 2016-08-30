@@ -28,7 +28,7 @@
       <nav>
         <ul class="nav nav-justified">
           <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
+          <li><a href="about.html">About</a></li>
           <li><a href="#">Contact</a></li>
         </ul>
       </nav>
@@ -130,8 +130,12 @@
   </div>
 <script>
     var uploadFileUrl = 'action.php?a=saveFileAction&c=Uploadfile';
+    var setCssSourceUrl = 'action.php?a=setCssSouceAction&c=ExcelToForm';
+    var parseFormUrl = 'action.php?a=parseFormAction&c=ExcelToForm';
     var uploadCssFlag = false;
+    var CssPath = '';
     var uploadExcelFlag = false;
+    var ExcelPath = '';
 
     $(document).ready(function(){
         hiddenAllDiv();
@@ -226,16 +230,19 @@
                     dataType: 'json', //返回值类型 一般设置为json
                     success: function (data)  //服务器成功响应处理函数
                     {
-                        if (data == 1) {
+                        var statusObj = JSON.parse(data);
+                        if (statusObj.status) {
                             alert("上传成功");
                             if(id == 'css'){
                                 uploadCssFlag = true;
+                                CssPath = statusObj.destination;
                             }
                             if(id == 'excel'){
                                 uploadExcelFlag = true;
+                                ExcelPath = statusObj.destination;
                             }
                         }else{
-                            alert("上传失败!请尝试重新上传");
+                            alert(statusObj.msg);
                         }
                     }
                 }
@@ -254,7 +261,70 @@
      *
      */
     var trantoForm = function() {
-
+        if(uploadCssFlag){
+            if(uploadExcelFlag){
+                $('#excelprogress').css("width","100%").text("100%");
+                $('#cssprogress').css("width","100%").text("100%");
+                $.post(setCssSourceUrl,{objstr:CssPath},function(data){
+                    if(data){
+                        $.post(parseFormUrl,{objstr:ExcelPath},function(data){
+                            if(data){
+                                $('#tranformprogess').css("width","100%").text("100%");
+                                alert("转换成功!");
+                                return;
+                            }else{
+                                alert("转换失败!");
+                                return;
+                            }
+                        });
+                    }else{
+                        alert("Css样式转换出错!");
+                        return;
+                    }
+                });
+            }else{
+                alert("excel未上传!将采用默认模板!");
+                $.post(parseFormUrl,{objstr:ExcelPath},function(data){
+                    if(data){
+                        if(data){
+                            $('#tranformprogess').css("width","100%").text("100%");
+                            alert("转换成功!");
+                            return;
+                        }
+                        alert("转换失败!");
+                        return;
+                    }
+                });
+            }
+        }else{
+            if(!uploadExcelFlag){
+                alert("excel 和 css均未上传,采用默认模板");
+                $.post(parseFormUrl,{objstr:ExcelPath},function(data){
+                    if(data){
+                        if(data){
+                            $('#tranformprogess').css("width","100%").text("100%");
+                            alert("转换成功!");
+                            return;
+                        }
+                        alert("转换失败!");
+                        return;
+                    }
+                });
+            }else{
+                alert("css未上传,采用默认css样式");
+                $.post(parseFormUrl,{objstr:ExcelPath},function(data){
+                    if(data){
+                        if(data){
+                            $('#tranformprogess').css("width","100%").text("100%");
+                            alert("转换成功!");
+                            return;
+                        }
+                        alert("转换失败!");
+                        return;
+                    }
+                });
+            }
+        }
     };
 </script>
 </body>

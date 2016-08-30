@@ -59,20 +59,20 @@ class Uploadfile {
                 $this->_logger(__FUNCTION__ ." ".__LINE__ ." 移动路径:".$params['destination']);
                 if($params['file']['error'] == UPLOAD_ERR_OK) {
                     if (move_uploaded_file($tmp_name,$params['destination'])) {
-                              return true;
+                              return json_encode(array("status"=>true,"destination"=>$params['destination']));;
                     }
                     $this->_logger(__FUNCTION__ ." ".__LINE__." 文件移动失败");
-                    return false;
+                    return json_encode(array("status"=>false,"msg"=>"move file failed!"));
                 }else{
                     $this->_logger(__FUNCTION__ ." ".__LINE__ ." 上传出错:".$params['file']['error']);
-                    return false;
+                    return json_encode(array("status"=>false,"msg"=>"upload file failed!"));;
                 }
             }else{
                 $this->_logger(__FUNCTION__ ." ".__LINE__ ." 文件不存在!");
-                return false;
+                return json_encode(array("status"=>false,"msg"=>"file is not exist!"));;
             }
         }
-        return false;
+        return json_encode(array("status"=>false,"msg"=>'_FILES is not set!'));
     }
 
     /**

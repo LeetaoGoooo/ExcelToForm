@@ -2,14 +2,18 @@
 require_once("./Class/exceltoform/ExcelToForm.class.php");
 
 class ExcelToFormController{
-  private $__excelForm;
+  private $_excelForm;
   public function __construct(){
-    $this->__excelForm = new ExcelToForm('./test.xls');
+    $this->_excelForm = new ExcelToForm('./test.xls');
   }
 
-  public function parseFormAction(){
-    $results = $this->__excelForm->genarateFormTemplates();
+  public function parseFormAction($filepath){
+    $results = $this->_excelForm->genarateFormTemplates($filepath);
     return $results;
+  }
+
+  public  function  setCssSouceAction($params){
+    return $this->_excelForm->setCssSouce($params);
   }
 }
 ?>
