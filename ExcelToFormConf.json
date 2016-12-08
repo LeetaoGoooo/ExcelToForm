@@ -1,0 +1,29 @@
+{
+    "tempHtmlPath": "template.html",
+    "isDefaultStyleEnable": true,
+    "defaultStylePath": "default-style.css",
+    "inlineStyle": {
+        "header": {
+            "id": "header",
+            "style": "height:10px;"
+        },
+        "button": {
+            "id": "button"
+        },
+        "input": {
+            "id": "input"
+        },
+        "radio": {
+            "id": "radio"
+        },
+        "checkbox": {
+            "id": "checkbox"
+        },
+        "label": {
+            "id": "label"
+        },
+        "select": {
+            "id": "select"
+        }
+    }
+}
