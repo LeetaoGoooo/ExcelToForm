@@ -1,0 +1,12 @@
+{
+  "name": "Leetao/ExcelToForm",
+  "description": "ExcelToForm",
+  "license": "BSD-3-Clause",
+  "homepage": "http://www.leetao94.com/",
+  "require": {
+    "phpoffice/phpexcel": "1.8.1"
+  },
+  "require-dev":{
+    "phpoffice/phpexcel": "1.8.1"
+  }
+}

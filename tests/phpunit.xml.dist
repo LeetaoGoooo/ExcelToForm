@@ -1,0 +1,15 @@
+<phpunit bootstrap="./Bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="leetao Test Suite">
+            <directory>./LeetaoTest</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whiltlist>
+            <directory>../src/Leetao/</directory>
+            <exclude>
+                <directory>../vendor/</directory>
+            </exclude>
+        </whiltlist>
+    </filter>
+</phpunit>

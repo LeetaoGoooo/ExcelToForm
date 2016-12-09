@@ -7,7 +7,7 @@
  * 实现Web端的表单自动生成
  *
  *  如果存在button，则存在字段type为button
- *  @author leetao
+ *  @author Leetao
  *  @version 0.0.1 2016/7/1
  *           0.0.2 2016/12/8
  *
@@ -28,7 +28,8 @@
  *
  */
 
-require_once("./lib/PHPexcel/Classes/PHPExcel/IOFactory.php");
+namespace Leetao;
+
 
 class ExcelToForm
 {
